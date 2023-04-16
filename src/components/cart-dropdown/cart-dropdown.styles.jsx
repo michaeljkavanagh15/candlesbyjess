@@ -4,7 +4,8 @@ import {
   BaseButton,
   GoogleSignInButton,
   InvertedButton,
-} from '../../../../candlesbyjess/src/components/button/button.styles';
+} from '../candlesbyjess/src/components/button/button.styles';
+
 
 export const CartDropdownContainer = styled.div`
   position: absolute;
