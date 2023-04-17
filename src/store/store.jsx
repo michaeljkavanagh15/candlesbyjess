@@ -20,9 +20,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: curryGetDefaultMiddleware(),
-  
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(middleWares),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(middleWares),
 });
 export const persistor = persistStore(store);
