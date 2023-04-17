@@ -16,10 +16,9 @@ import { setCurrentUser } from "./store/user/user.reducer";
 import { useEffect } from "react";
 
 function App() {
-  
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const dispatch = useDispatch();
     const unsubscribe = onAuthStateChangedListener((user) => {
       if (user) {
         createUserDocumentFromAuth(user);
