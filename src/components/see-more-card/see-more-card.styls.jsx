@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import {Link} from 'react-router-dom'
+import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const SeeMoreCardContainer = styled(Link)`
   width: 100%;
@@ -19,7 +19,6 @@ export const SeeMoreCardContainer = styled(Link)`
     margin-bottom: 5px;
     opacity: 0.3;
     z-index: 0;
-
   }
 
   button {
@@ -56,4 +55,4 @@ export const Test = styled.h3`
   left: 50%;
   transform: translate(-50%, -50%);
   color: black;
-`
+`;

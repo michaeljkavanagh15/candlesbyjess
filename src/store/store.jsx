@@ -5,6 +5,7 @@ import storage from "redux-persist/lib/storage";
 import logger from "redux-logger";
 
 import { rootReducer } from "./root-reducer";
+import { curryGetDefaultMiddleware } from "@reduxjs/toolkit/dist/getDefaultMiddleware";
 
 const middleWares = [process.env.NODE_ENV === "development" && logger].filter(
   Boolean
@@ -20,7 +21,9 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
-//   middleware: (getDefaultMiddleware) =>
-//     getDefaultMiddleware().concat(middleWares),
+  middleware: curryGetDefaultMiddleware(),
+  
+  //   middleware: (getDefaultMiddleware) =>
+  //     getDefaultMiddleware().concat(middleWares),
 });
 export const persistor = persistStore(store);

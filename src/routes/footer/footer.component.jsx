@@ -5,6 +5,7 @@ import {
   FooterLink,
   SocialMediaName,
 } from "./footer.styles";
+
 const Footer = () => {
   const curYear = new Date().getFullYear();
 

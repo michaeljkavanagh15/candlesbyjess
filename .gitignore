@@ -7,6 +7,9 @@
 
 # testing
 /coverage
+.instagram-feed
+.instagram-feed.component.jsx
+/src/components/.instagram-feed
 
 # production
 /build

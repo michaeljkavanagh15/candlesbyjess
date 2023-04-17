@@ -12,26 +12,26 @@ export const CategoryContainer = styled.div`
   row-gap: 50px;
   padding: 0 5%;
   ${({ outOfStock }) => !outOfStock && OutOfStockLayout}
+
   @media(max-width: 500px) {
     grid-template-columns: repeat(1, 1fr);
   }
-
-  @media(501px <= width <= 700px){
+  @media (501px <= width <= 700px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  @media(701px <= width <= 900px){
+  @media (701px <= width <= 900px) {
     grid-template-columns: repeat(3, 1fr);
   }
 `;
 
 export const Title = styled.h2`
-margin-top: 2%;
+  margin-top: 2%;
   font-size: 3.5rem;
-  font-family: 'Merienda', cursive;
+  font-family: "Merienda", cursive;
 
   margin-bottom: 25px;
   text-align: center;
-  color: #A9907E;
+  color: #a9907e;
 `;
 
 export const OutOfStockMessage = styled.h3`

@@ -3,7 +3,6 @@ import {
   Footer,
   Name,
   Price,
-  AddToCartButton,
   ButtonDiv,
 } from "./product-card.styles";
 import { useDispatch } from "react-redux";

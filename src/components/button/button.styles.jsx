@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const BaseButton = styled.button`
   min-width: 165px;
@@ -8,10 +8,10 @@ export const BaseButton = styled.button`
   line-height: 50px;
   padding: 0 5%;
   font-size: 15px;
-  background-color: #CCD6A6;
-  color: #675D50;
+  background-color: #ccd6a6;
+  color: #675d50;
   text-transform: uppercase;
-  font-family: 'Open Sans Condensed';
+  font-family: "Open Sans Condensed";
   font-weight: bolder;
   border: line;
   cursor: pointer;
@@ -19,7 +19,7 @@ export const BaseButton = styled.button`
   justify-content: center;
 
   &:hover {
-    background-color: #ABC4AA;
+    background-color: #abc4aa;
     color: black;
     border: 1px solid black;
   }
@@ -48,6 +48,6 @@ export const InvertedButton = styled(BaseButton)`
 `;
 
 export const GoogleSymbol = styled.i`
-margin-top: 11%;
-margin-right: 4%;
-`
+  margin-top: 11%;
+  margin-right: 4%;
+`;

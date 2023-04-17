@@ -1,15 +1,18 @@
 import { CartImage, CartItemContainer, ItemDetails } from "./cart-item.styles";
+
 import { getItemCategory } from "../../utils/firebase/firebase.utils";
 import { useNavigate } from "react-router-dom";
 import { setIsCartOpen } from "../../store/cart/cart.reducer";
+
 const CartItem = ({ cartItem }) => {
   const { name, images, price, quantity, id } = cartItem;
   const itemCategory = getItemCategory(id);
   const route = `/shop/${itemCategory}/${id}`;
+  
   const navigate = useNavigate();
   const navigateHandler = () => {
-    navigate(route)
-    setIsCartOpen(false)
+    navigate(route);
+    setIsCartOpen(false);
   };
   return (
     <CartItemContainer>

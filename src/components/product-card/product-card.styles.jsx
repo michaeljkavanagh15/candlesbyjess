@@ -19,13 +19,6 @@ export const ProductCardContainer = styled(Link)`
     margin-bottom: 5px;
   }
 
-  button {
-    ${'' /* width: 80%; */}
-    ${'' /* opacity: 0.7; */}
-    ${'' /* position: absolute;
-    top: 255px; */}
-    ${'' /* display: none; */}
-  }
 
   &:hover {
     color: #675D50;
@@ -62,10 +55,3 @@ display: flex;
   align-items: center;
 `
 
-
-export const AddToCartButton = styled.button`
-  justify-content: center;
-  align-items: center;
-  margin: 5% 0;
-  width: 100%;
-`

@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { selectCurrentUser } from "../../store/user/user.selector";
 import { useSelector } from "react-redux";
-import { selectIsCartOpen } from '../../store/cart/cart.selector';
+import { selectIsCartOpen } from "../../store/cart/cart.selector";
 
 import { Link, Outlet } from "react-router-dom";
 
@@ -14,8 +14,8 @@ import {
 } from "./navibar.styles";
 import Footer from "../footer/footer.component";
 import { signOutUser } from "../../utils/firebase/firebase.utils";
-import CartIcon from '../../components/cart-icon/cart-icon.component';
-import CartDropdown from '../../components/cart-dropdown/cart-dropdown.component';
+import CartIcon from "../../components/cart-icon/cart-icon.component";
+import CartDropdown from "../../components/cart-dropdown/cart-dropdown.component";
 
 function NaviBar() {
   const currentUser = useSelector(selectCurrentUser);

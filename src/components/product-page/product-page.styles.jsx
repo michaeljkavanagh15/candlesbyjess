@@ -18,12 +18,6 @@ export const ProductInfoContainer = styled.div`
   }
 `;
 
-export const ProductImages = styled.img`
-  width: 100%;
-  height: auto;
-
-
-`;
 export const ProductDescription = styled.div`
   font-size: 1.2rem;
   width: 100%;

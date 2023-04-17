@@ -1,6 +1,6 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 export const AboutContainer = styled.div`
-text-align: center;
-padding: 7%;
-`
+  text-align: center;
+  padding: 7%;
+`;

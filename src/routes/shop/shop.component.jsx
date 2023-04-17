@@ -21,7 +21,7 @@ const Shop = () => {
   return (
     <div>
       <Routes>
-        <Route path='*' index element={<CategoriesPreview />} />
+        <Route path="*" index element={<CategoriesPreview />} />
         <Route path=":category/*" index element={<Category />} />
       </Routes>
     </div>

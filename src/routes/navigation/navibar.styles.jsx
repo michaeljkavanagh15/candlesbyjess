@@ -36,8 +36,7 @@ export const LinkContainer = styled.div`
   white-space: nowrap;
   align-items: center;
 
-
-  @media(max-width: 700px) {
+  @media (max-width: 700px) {
     grid-template-columns: repeat(2, 1fr);
   }
 `;
@@ -45,10 +44,8 @@ export const NavbarContainer = styled(Nav)`
   float: right;
 `;
 
-
 export const LogoContainer = styled(Link)`
   height: 10%;
   max-width: auto;
   padding: 25px;
 `;
-

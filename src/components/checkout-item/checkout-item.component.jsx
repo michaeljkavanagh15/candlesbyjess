@@ -14,21 +14,21 @@ import {
   Arrow,
   Value,
   RemoveButton,
-  NameLink
+  NameLink,
 } from "./checkout-item.styles";
 import { getItemCategory } from "../../utils/firebase/firebase.utils";
 
 const CheckoutItem = ({ cartItem }) => {
   const { name, images, price, quantity, id } = cartItem;
   const dispatch = useDispatch();
-const itemCategory = getItemCategory(id);
 
+  const itemCategory = getItemCategory(id);
   const route = `/shop/${itemCategory}/${id}`;
 
   const clearItemHandler = () => dispatch(clearItemFromCart(cartItem));
   const addItemHandler = () => dispatch(addItemToCart(cartItem));
   const removeItemHandler = () => dispatch(removeItemFromCart(cartItem));
-console.log(images);
+  console.log(images);
   return (
     <CheckoutItemContainer>
       <ImageContainer>
@@ -36,7 +36,10 @@ console.log(images);
           <img src={images} alt={`${name}`} />
         </Link>
       </ImageContainer>
-      <BaseSpan> <NameLink to={route}>{name} </NameLink></BaseSpan>
+      <BaseSpan>
+        {" "}
+        <NameLink to={route}>{name} </NameLink>
+      </BaseSpan>
       <Quantity>
         <Arrow onClick={removeItemHandler}>&#10094;</Arrow>
         <Value>{quantity}</Value>

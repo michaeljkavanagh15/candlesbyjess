@@ -7,14 +7,13 @@ import Contact from "./routes/contact/contact.component";
 import About from "./routes/about/about.component";
 import Authentication from "./routes/authentication/authentication.component";
 import Checkout from "./routes/checkout/checkout.component";
-import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 import {
   onAuthStateChangedListener,
   createUserDocumentFromAuth,
-} from './utils/firebase/firebase.utils';
-import { setCurrentUser } from './store/user/user.reducer';
-import { useEffect } from 'react';
-
+} from "./utils/firebase/firebase.utils";
+import { setCurrentUser } from "./store/user/user.reducer";
+import { useEffect } from "react";
 
 function App() {
   const dispatch = useDispatch();
@@ -40,7 +39,6 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/auth" element={<Authentication />} />
         <Route path="/checkout" element={<Checkout />} />
-
       </Route>
     </Routes>
   );

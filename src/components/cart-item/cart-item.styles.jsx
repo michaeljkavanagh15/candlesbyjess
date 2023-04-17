@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const CartItemContainer = styled.div`
   width: 100%;
@@ -25,8 +25,7 @@ export const ItemDetails = styled.div`
 `;
 
 export const CartImage = styled.img`
-
-&:hover {
-  cursor: pointer;
-}
-`
+  &:hover {
+    cursor: pointer;
+  }
+`;

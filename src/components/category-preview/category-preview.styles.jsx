@@ -18,17 +18,16 @@ export const Preview = styled.div`
   column-gap: 20px;
   padding: 0 5%;
   row-gap: 20px;
-  
-  @media(max-width: 500px) {
+
+  @media (max-width: 500px) {
     grid-template-columns: repeat(1, 1fr);
   }
-  @media(501px <= width <= 700px){
+  @media (501px <= width <= 700px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  @media(701px <= width <= 900px){
+  @media (701px <= width <= 900px) {
     grid-template-columns: repeat(3, 1fr);
   }
-
 `;
 
 export const CategoryHeaderName = styled(Link)`

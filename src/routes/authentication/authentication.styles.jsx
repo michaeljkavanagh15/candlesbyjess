@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const AuthenticationContainer = styled.div`
   display: grid;
@@ -9,8 +9,7 @@ export const AuthenticationContainer = styled.div`
   justify-content: center;
   margin: 30px auto;
 
-
-  @media(max-width: 1000px) {
+  @media (max-width: 1000px) {
     grid-template-columns: repeat(1, 1fr);
     padding: 0 10%;
   }

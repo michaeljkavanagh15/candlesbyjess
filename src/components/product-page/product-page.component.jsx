@@ -2,15 +2,14 @@ import { useParams } from "react-router-dom";
 import ImageCarousel from "../carousel/carousel.components";
 import {
   ProductPageContainer,
-  ProductImages,
   ProductName,
   ProductInfoContainer,
   ProductDescription,
 } from "./product-page.styles";
-import Button, { BUTTON_TYPE_CLASSES } from "../button/button.component";
-import { useDispatch } from 'react-redux';
+import Button from "../button/button.component";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { addItemToCart } from '../../store/cart/cart.reducer';
+import { addItemToCart } from "../../store/cart/cart.reducer";
 
 const ProductPage = ({ products }) => {
   let item;
@@ -21,8 +20,8 @@ const ProductPage = ({ products }) => {
   const addProductToCart = () => dispatch(addItemToCart(item));
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <ProductPageContainer>
