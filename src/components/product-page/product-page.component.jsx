@@ -21,7 +21,7 @@ const ProductPage = ({ products }) => {
 
   item = products.filter((product) => product.id === parseInt(id));
   const { name, stock, price, scent, description, images } = item[0];
-  const addProductToCart = () => dispatch(addItemToCart(item));
+  const addProductToCart = () => dispatch(addItemToCart(item[0]));
 
   useEffect(() => {
     window.scrollTo(0, 0);

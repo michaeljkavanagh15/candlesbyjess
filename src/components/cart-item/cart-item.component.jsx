@@ -8,12 +8,13 @@ const CartItem = ({ cartItem }) => {
   const { name, images, price, quantity, id } = cartItem;
   const itemCategory = getItemCategory(id);
   const route = `/shop/${itemCategory}/${id}`;
-  
+
   const navigate = useNavigate();
   const navigateHandler = () => {
     navigate(route);
     setIsCartOpen(false);
   };
+
   return (
     <CartItemContainer>
       <CartImage onClick={navigateHandler} src={images[0]} alt={`${name}`} />

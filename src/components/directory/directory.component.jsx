@@ -1,11 +1,12 @@
 import DirectoryItem from "../directory-item/directory-item.component";
 import { getCategoriesAndDocuments } from "../../utils/firebase/firebase.utils";
 import { DirectoryContainer } from "./directory.styles";
+import { useEffect } from "react";
 
-const getData = async () => {
-  await getCategoriesAndDocuments();
-};
-getData();
+// const getData = async () => {
+//   await getCategoriesAndDocuments();
+// };
+// getData();
 
 const categories = [
   {
@@ -43,6 +44,13 @@ const categories = [
 ];
 
 const Directory = () => {
+  useEffect(() => {
+    const getData = async () => {
+      await getCategoriesAndDocuments();
+    };
+    getData();
+  }, []);
+
   return (
     <DirectoryContainer>
       {categories.map((category) => (
