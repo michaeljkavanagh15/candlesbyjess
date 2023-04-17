@@ -13,7 +13,7 @@ import { addItemToCart } from "../../store/cart/cart.reducer";
 
 const ProductPage = ({ products }) => {
   let item;
-  const { category, id } = useParams();
+  const { id } = useParams();
   const dispatch = useDispatch();
   item = products.filter((product) => product.id === parseInt(id));
   const { name, stock, price, scent, description, images } = item[0];
@@ -32,7 +32,7 @@ const ProductPage = ({ products }) => {
           <p>Price: ${price}</p>
           <p>Scent: {scent}</p>
           <p>{description}</p>
-          <Button onClick={addProductToCart}>Add to Cart</Button>{" "}
+          {stock && <Button onClick={addProductToCart}>Add to Cart</Button>}
         </ProductDescription>
       </ProductInfoContainer>
     </ProductPageContainer>

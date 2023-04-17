@@ -3,7 +3,7 @@ import { getCategoriesAndDocuments } from "../../utils/firebase/firebase.utils";
 import { DirectoryContainer } from "./directory.styles";
 
 const getData = async () => {
-  const data = await getCategoriesAndDocuments();
+  await getCategoriesAndDocuments();
 };
 getData();
 
