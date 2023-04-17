@@ -10,11 +10,15 @@ import Button from "../button/button.component";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { addItemToCart } from "../../store/cart/cart.reducer";
+import { setIsCartOpen } from "../../store/cart/cart.reducer";
 
 const ProductPage = ({ products }) => {
   let item;
   const { id } = useParams();
   const dispatch = useDispatch();
+
+  dispatch(setIsCartOpen(false));
+
   item = products.filter((product) => product.id === parseInt(id));
   const { name, stock, price, scent, description, images } = item[0];
   const addProductToCart = () => dispatch(addItemToCart(item));
