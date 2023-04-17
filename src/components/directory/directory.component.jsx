@@ -2,11 +2,10 @@ import DirectoryItem from "../directory-item/directory-item.component";
 import { getCategoriesAndDocuments } from "../../utils/firebase/firebase.utils";
 import { DirectoryContainer } from "./directory.styles";
 import { useEffect } from "react";
+import { setCategories } from "../../store/categories/category.reducer";
+import { useSelector, useDispatch } from "react-redux";
+import { selectCategoriesMap } from "../../store/categories/category.selector";
 
-// const getData = async () => {
-//   await getCategoriesAndDocuments();
-// };
-// getData();
 
 const categories = [
   {
@@ -44,12 +43,17 @@ const categories = [
 ];
 
 const Directory = () => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    const getData = async () => {
-      await getCategoriesAndDocuments();
+    const getCategoriesMap = async () => {
+      const categoriesArray = await getCategoriesAndDocuments();
+      dispatch(setCategories(categoriesArray));
     };
-    getData();
+    getCategoriesMap();
   }, []);
+
+  const categoriesMap = useSelector(selectCategoriesMap);
 
   return (
     <DirectoryContainer>
