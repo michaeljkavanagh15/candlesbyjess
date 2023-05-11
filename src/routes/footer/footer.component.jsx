@@ -23,7 +23,7 @@ const Footer = () => {
           </SocialMediaName>
         </span>
         <span>
-          <i class="fa-brands fa-instagram" />
+          <i className="fa-brands fa-instagram" />
           <SocialMediaName
             target="none"
             to="https://www.instagram.com/candles_by_jesss/"
@@ -32,7 +32,7 @@ const Footer = () => {
           </SocialMediaName>
         </span>
         <span>
-          <i class="fa-brands fa-etsy" />
+          <i className="fa-brands fa-etsy" />
           <SocialMediaName
             target="none"
             to="https://www.etsy.com/shop/CandlesbyJessss?ref=search_shop_redirect"
