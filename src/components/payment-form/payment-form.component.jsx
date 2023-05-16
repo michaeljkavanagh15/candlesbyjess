@@ -18,7 +18,6 @@ const PaymentForm = () => {
   const amount = useSelector(selectCartTotal);
   const currentUser = useSelector(selectCurrentUser);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  let displayName;
 
   const paymentHandler = async (e) => {
     e.preventDefault();
@@ -36,10 +35,8 @@ const PaymentForm = () => {
       body: JSON.stringify({ amount: amount * 100 }),
     }).then((res) => res.json());
     const clientSecret = response.paymentIntent.client_secret;
-    if (currentUser && !currentUser.displayName) {
-      displayName = await getUserDisplayName(currentUser.uid);
-    }
-    let name = currentUser ? displayName : "Guest";
+
+    let name = currentUser ? (currentUser.displayName ? currentUser.displayName: await getUserDisplayName(currentUser.uid)) : "Guest";
     const paymentResult = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
