@@ -36,7 +36,7 @@ const PaymentForm = () => {
       body: JSON.stringify({ amount: amount * 100 }),
     }).then((res) => res.json());
     const clientSecret = response.paymentIntent.client_secret;
-    if (currentUser) {
+    if (currentUser && !currentUser.displayName) {
       displayName = await getUserDisplayName(currentUser.uid);
     }
     let name = currentUser ? displayName : "Guest";
