@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../../store/user/user.selector";
 
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
@@ -38,10 +40,10 @@ const SignUpForm = () => {
     try {
       const { user } = await createAuthUserWithEmailAndPassword(
         email,
-        password
+        password, 
       );
 
-      await createUserDocumentFromAuth(user, { displayName });
+      await createUserDocumentFromAuth(user, {displayName});
       resetFormFields();
       navigate("/shop");
     } catch (error) {
@@ -59,6 +61,7 @@ const SignUpForm = () => {
     setFormFields({ ...formFields, [name]: value });
   };
 
+
   return (
     <SignUpContainer>
       <h2>Don't have an account?</h2>
@@ -71,6 +74,15 @@ const SignUpForm = () => {
           onChange={handleChange}
           name="email"
           value={email}
+        />
+
+        <FormInput
+          label="Name"
+          type="text"
+          required
+          onChange={handleChange}
+          name="displayName"
+          value={displayName}
         />
 
         <FormInput

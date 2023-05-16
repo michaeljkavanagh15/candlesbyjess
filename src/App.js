@@ -11,25 +11,31 @@ import { useDispatch } from "react-redux";
 import {
   onAuthStateChangedListener,
   createUserDocumentFromAuth,
+  getUserDisplayName,
 } from "./utils/firebase/firebase.utils";
 import { setCurrentUser } from "./store/user/user.reducer";
 import { useEffect } from "react";
 
 function App() {
   const dispatch = useDispatch();
+  // let dname = "";
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChangedListener((user) => {
+    const unsubscribe = onAuthStateChangedListener(async (user) => {
       if (user) {
-        createUserDocumentFromAuth(user);
+        // createUserDocumentFromAuth(user);
+        //  dname = await getUserDisplayName(user.uid)
       }
       const pickedUser =
-        user && (({ accessToken, email }) => ({ accessToken, email }(user)));
+        user && (({ accessToken, email, displayName, uid }) => ({ accessToken, email, displayName, uid }))(user);
+        // dname && (pickedUser.displayName = dname);
       dispatch(setCurrentUser(pickedUser));
     });
 
     return unsubscribe;
   }, []);
+
+
   return (
     <Routes>
       <Route path="/" element={<NaviBar />}>

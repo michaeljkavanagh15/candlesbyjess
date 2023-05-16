@@ -49,7 +49,6 @@ export const InvertedButton = styled(BaseButton)`
 `;
 
 export const GoogleSymbol = styled.i`
-  margin-top: 11%;
   margin-right: 4%;
 `;
 

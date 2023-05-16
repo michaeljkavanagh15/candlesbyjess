@@ -5,14 +5,20 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { selectCartTotal } from "../../store/cart/cart.selector";
 import { selectCurrentUser } from "../../store/user/user.selector";
 
-import { PaymentFormContainer, FormContainer, PaymentButton } from "./payment-form.styles";
+import {
+  PaymentFormContainer,
+  FormContainer,
+  PaymentButton,
+} from "./payment-form.styles";
+import { getUserDisplayName } from "../../utils/firebase/firebase.utils";
 
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const amount = useSelector(selectCartTotal)
-  const currentUser = useSelector(selectCurrentUser)
-  const [isProcessingPayment, setIsProcessingPayment ] = useState(false)
+  const amount = useSelector(selectCartTotal);
+  const currentUser = useSelector(selectCurrentUser);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  let displayName;
 
   const paymentHandler = async (e) => {
     e.preventDefault();
@@ -28,28 +34,30 @@ const PaymentForm = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ amount: amount * 100 }),
-    }).then(res => res.json())
+    }).then((res) => res.json());
     const clientSecret = response.paymentIntent.client_secret;
-    const curName = currentUser.name ? currentUser.name : "Guest"
-    console.log(clientSecret)
-
+    if (currentUser) {
+      displayName = await getUserDisplayName(currentUser.uid);
+    }
+    let name = currentUser ? displayName : "Guest";
     const paymentResult = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-            card: elements.getElement(CardElement), 
-            billing_details: {
-                name: curName,
-            }
-        }
+      payment_method: {
+        card: elements.getElement(CardElement),
+        billing_details: {
+          name: name,
+        },
+      },
     });
 
-    setIsProcessingPayment(false)
-    
+    setIsProcessingPayment(false);
+
     if (paymentResult.error) {
-        alert(paymentResult.error)
+      alert(paymentResult.error);
     } else {
-        if (paymentResult.paymentIntent.status === 'succeeded') {
-            alert(`Payment Successful! Thank you ${curName}`)
-        }
+      if (paymentResult.paymentIntent.status === "succeeded") {
+        alert(`Payment Successful! Thank you ${name}!`);
+        // Send email confirmation to customer and admin email
+      }
     }
   };
 

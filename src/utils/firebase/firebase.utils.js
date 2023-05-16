@@ -76,33 +76,67 @@ export const getCategoriesAndDocuments = async () => {
   return querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
 };
 
+// export const createUserDocumentFromAuth = async (
+//   userAuth,
+//   additionalInformation = {}
+// ) => {
+//   if (!userAuth) return;
+
+//   const userDocRef = doc(db, "users", userAuth.uid);
+
+//   const userSnapshot = await getDoc(userDocRef);
+
+//   if (!userSnapshot.exists()) {
+//     const { displayName, email } = userAuth;
+//     const createdAt = new Date();
+
+//     try {
+//       await setDoc(userDocRef, {
+//         displayName,
+//         email,
+//         createdAt,
+//         ...additionalInformation,
+//       });
+//     } catch (error) {
+//       console.log("error creating the user", error.message);
+//     }
+//   }
+
+//   return userDocRef;
+// };
+
+
 export const createUserDocumentFromAuth = async (
   userAuth,
-  additionalInformation = {}
+  additionalDetails = {}
 ) => {
-  if (!userAuth) return;
+  const userDocRef =  doc(db, "users", userAuth.uid);
+  const { displayName} = additionalDetails;
 
-  const userDocRef = doc(db, "users", userAuth.uid);
 
-  const userSnapshot = await getDoc(userDocRef);
+  const userSnapShot = await getDoc(userDocRef);
+ 
+  if (!userSnapShot.exists()) {
+    const { email } = userAuth;
 
-  if (!userSnapshot.exists()) {
-    const { displayName, email } = userAuth;
     const createdAt = new Date();
-
+ 
     try {
+      console.log(displayName)
       await setDoc(userDocRef, {
         displayName,
         email,
         createdAt,
-        ...additionalInformation,
+        ...additionalDetails,
       });
+      const userSnapShot = await getDoc(userDocRef);
+      return userSnapShot;
     } catch (error) {
-      console.log("error creating the user", error.message);
+      console.log("Error creating the user", error.message);
     }
   }
-
-  return userDocRef;
+ 
+  return userSnapShot;
 };
 
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
@@ -121,6 +155,12 @@ export const signOutUser = async () => await signOut(auth);
 
 export const onAuthStateChangedListener = (callback) =>
   onAuthStateChanged(auth, callback);
+
+export const getUserDisplayName = async(userID) => {
+  const userDocRef =  doc(db, "users", userID);
+  const userSnapShot = await getDoc(userDocRef);
+  return userSnapShot.data().displayName;
+}
 
 export const getItemCategory = (id) => {
   if (id <= 1999) {
