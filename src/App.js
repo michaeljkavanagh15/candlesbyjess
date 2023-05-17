@@ -19,23 +19,16 @@ import NotFound from "./components/not-found/not-found.component";
 
 function App() {
   const dispatch = useDispatch();
-  // let dname = "";
-
   useEffect(() => {
     const unsubscribe = onAuthStateChangedListener(async (user) => {
-      if (user) {
-        // createUserDocumentFromAuth(user);
-        //  dname = await getUserDisplayName(user.uid)
-      }
+
       const pickedUser =
-        user && (({ accessToken, email, displayName, fullName, uid }) => ({ accessToken, email, displayName: (displayName ? displayName : fullName), uid }))(user);
+        user && (({ accessToken, email, displayName, uid }) => ({ accessToken, email, displayName, uid }))(user);
       dispatch(setCurrentUser(pickedUser));
-      console.log(pickedUser);
     });
 
     return unsubscribe;
   }, []);
-
 
   return (
     <Routes>

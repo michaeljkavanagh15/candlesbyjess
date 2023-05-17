@@ -22,8 +22,6 @@ import {
   query,
   getDocs,
 } from "firebase/firestore";
-import { useDispatch } from "react-redux";
-import { setCurrentUser } from "../../store/user/user.reducer";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -113,7 +111,7 @@ export const createUserDocumentFromAuth = async (
   additionalDetails = {}
 ) => {
   const userDocRef =  doc(db, "users", userAuth.uid);
-  const { fullName } = additionalDetails;
+  const { displayName} = additionalDetails;
 
 
   const userSnapShot = await getDoc(userDocRef);
@@ -125,7 +123,7 @@ export const createUserDocumentFromAuth = async (
  
     try {
       await setDoc(userDocRef, {
-        displayName: fullName,
+        displayName,
         email,
         createdAt,
         ...additionalDetails,
@@ -143,7 +141,7 @@ export const createUserDocumentFromAuth = async (
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
 
-  return await createUserWithEmailAndPassword(auth, email, password)
+  return await createUserWithEmailAndPassword(auth, email, password);
 };
 
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
