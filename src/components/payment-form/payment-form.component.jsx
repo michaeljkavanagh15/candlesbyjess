@@ -19,19 +19,6 @@ const PaymentForm = () => {
   const currentUser = useSelector(selectCurrentUser);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
-  const sendEmail = async (e) => {
-    const response = await fetch("/.netlify/functions/send-email.py", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ address: "51 Newman Street", name: "Mike" }),
-    }).then((res) => {
-      res.json();
-      console.log(response);
-    });
-  };
-
   const paymentHandler = async (e) => {
     e.preventDefault();
 
@@ -77,7 +64,6 @@ const PaymentForm = () => {
 
   return (
     <PaymentFormContainer>
-      <button onSubmit={sendEmail}>Submit Email Test</button>
       <FormContainer onSubmit={paymentHandler}>
         <h2>Credit Card Payment: </h2>
         <CardElement />
