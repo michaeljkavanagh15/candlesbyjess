@@ -15,6 +15,7 @@ import {
 } from "./utils/firebase/firebase.utils";
 import { setCurrentUser } from "./store/user/user.reducer";
 import { useEffect } from "react";
+import NotFound from "./components/not-found/not-found.component";
 
 function App() {
   const dispatch = useDispatch();
@@ -27,9 +28,9 @@ function App() {
         //  dname = await getUserDisplayName(user.uid)
       }
       const pickedUser =
-        user && (({ accessToken, email, displayName, uid }) => ({ accessToken, email, displayName, uid }))(user);
-        // dname && (pickedUser.displayName = dname);
+        user && (({ accessToken, email, displayName, fullName, uid }) => ({ accessToken, email, displayName: (displayName ? displayName : fullName), uid }))(user);
       dispatch(setCurrentUser(pickedUser));
+      console.log(pickedUser);
     });
 
     return unsubscribe;
@@ -45,6 +46,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/auth" element={<Authentication />} />
         <Route path="/checkout" element={<Checkout />} />
+      <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

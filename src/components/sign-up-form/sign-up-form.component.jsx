@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "../../store/user/user.selector";
 
 import FormInput from "../form-input/form-input.component";
@@ -12,9 +12,10 @@ import {
 } from "../../utils/firebase/firebase.utils";
 
 import { SignUpContainer } from "./sign-up-form.styles";
+import { setCurrentUser } from "../../store/user/user.reducer";
 
 const defaultFormFields = {
-  displayName: "",
+  fullName: "",
   email: "",
   password: "",
   confirmPassword: "",
@@ -22,8 +23,9 @@ const defaultFormFields = {
 
 const SignUpForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
-  const { displayName, email, password, confirmPassword } = formFields;
+  const { fullName, email, password, confirmPassword } = formFields;
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
@@ -41,9 +43,14 @@ const SignUpForm = () => {
       const { user } = await createAuthUserWithEmailAndPassword(
         email,
         password, 
-      );
-
-      await createUserDocumentFromAuth(user, {displayName});
+      ).then((user) => {
+        const pickedUser =
+        user && (({ accessToken, email, uid }) => ({ accessToken, email, displayName: fullName, uid }))(user.user);
+        dispatch(setCurrentUser(pickedUser));
+        return user;
+      });;
+ 
+      await createUserDocumentFromAuth(user, {fullName});
       resetFormFields();
       navigate("/shop");
     } catch (error) {
@@ -81,8 +88,8 @@ const SignUpForm = () => {
           type="text"
           required
           onChange={handleChange}
-          name="displayName"
-          value={displayName}
+          name="fullName"
+          value={fullName}
         />
 
         <FormInput
