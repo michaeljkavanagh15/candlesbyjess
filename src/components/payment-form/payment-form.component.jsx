@@ -19,6 +19,19 @@ const PaymentForm = () => {
   const currentUser = useSelector(selectCurrentUser);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
+  const sendEmail = async (e) => {
+    const response = await fetch("/.netlify/functions/send-email.py", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ address: "51 Newman Street", name: "Mike" }),
+    }).then((res) => {
+      res.json();
+      console.log(response);
+    });
+  };
+
   const paymentHandler = async (e) => {
     e.preventDefault();
 
@@ -36,7 +49,11 @@ const PaymentForm = () => {
     }).then((res) => res.json());
     const clientSecret = response.paymentIntent.client_secret;
 
-    let name = currentUser ? (currentUser.displayName ? currentUser.displayName: await getUserDisplayName(currentUser.uid)) : "Guest";
+    let name = currentUser
+      ? currentUser.displayName
+        ? currentUser.displayName
+        : await getUserDisplayName(currentUser.uid)
+      : "Guest";
     const paymentResult = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
@@ -60,6 +77,7 @@ const PaymentForm = () => {
 
   return (
     <PaymentFormContainer>
+      <button onSubmit={sendEmail}>Submit Email Test</button>
       <FormContainer onSubmit={paymentHandler}>
         <h2>Credit Card Payment: </h2>
         <CardElement />
