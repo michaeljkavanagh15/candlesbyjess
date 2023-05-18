@@ -1,14 +1,20 @@
 import emailjs from "@emailjs/browser";
 
-export const sendEmail = (clientName, checkoutItems={}, clientAddress) => {
+export const sendEmail = (customerName, shippingName, checkoutItems={}, shippingAddress, shippingCity, shippingState, shippingZipCode, phoneNumber) => {
   let stringCheckoutItems = "";
-  checkoutItems.forEach((item) => {
-    stringCheckoutItems += `price: $ ${item.price}, name: ${item.name}, quantity: ${item.quantity}, scent: ${item.scent}, item_id: ${item.id}\n`;
+  checkoutItems.forEach((item, index) => {
+    stringCheckoutItems += `Item #${index + 1}: price: $ ${item.price}, name: ${item.name}, quantity: ${item.quantity}, scent: ${item.scent}, item_id: ${item.id}.
+    There are ${item.stock} remaining\n`;
   });
   let templateParams = {
-    clientName: clientName,
-    clientAddress: clientAddress,
+    customerName: customerName,
+    shippingName: shippingName,
+    shippingAddress: shippingAddress,
     purchasedItems: stringCheckoutItems,
+    shippingCity: shippingCity,
+    shippingState: shippingState,
+    shippingZipCode: shippingZipCode,
+    phoneNumber: phoneNumber
   };
   emailjs
     .send(

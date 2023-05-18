@@ -1,4 +1,3 @@
-import { async } from "@firebase/util";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -7,6 +6,7 @@ import {
   selectCartItems,
 } from "../../store/cart/cart.selector";
 import { selectCurrentUser } from "../../store/user/user.selector";
+import FormInput from "../form-input/form-input.component";
 
 import {
   PaymentFormContainer,
@@ -15,6 +15,17 @@ import {
 } from "./payment-form.styles";
 import { getUserDisplayName } from "../../utils/firebase/firebase.utils";
 import { sendEmail } from "../../utils/emailJS/emailJS.utils";
+import CustomerCheckoutForm from "../customer-checkout-form/customer-checkout-form.component";
+
+const defaultFormFields = {
+  shippingName: "",
+  shippingAddress: "",
+  shippingCity: "",
+  shippingState: "",
+  shippingZipCode: "",
+  customerState: "",
+  phoneNumber: "",
+};
 
 const PaymentForm = () => {
   const stripe = useStripe();
@@ -23,10 +34,26 @@ const PaymentForm = () => {
   const checkoutItems = useSelector(selectCartItems);
   const currentUser = useSelector(selectCurrentUser);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [address, setAddress] = useState("");
+  // const [address, setAddress] = useState("");
 
-  const handleChange = (e) => {
-    setAddress(e.target.value);
+  // const handleChange = (e) => {
+  //   setAddress(e.target.value);
+  // };
+
+  const [formFields, setFormFields] = useState(defaultFormFields);
+  const {
+    shippingName,
+    shippingAddress,
+    shippingCity,
+    shippingZipCode,
+    shippingState,
+    phoneNumber,
+  } = formFields;
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormFields({ ...formFields, [name]: value });
   };
 
   const paymentHandler = async (e) => {
@@ -46,7 +73,7 @@ const PaymentForm = () => {
     }).then((res) => res.json());
     const clientSecret = response.paymentIntent.client_secret;
 
-    let name = currentUser
+    let customerName = currentUser
       ? currentUser.displayName
         ? currentUser.displayName
         : await getUserDisplayName(currentUser.uid)
@@ -55,7 +82,7 @@ const PaymentForm = () => {
       payment_method: {
         card: elements.getElement(CardElement),
         billing_details: {
-          name: name,
+          name: customerName,
         },
       },
     });
@@ -66,9 +93,18 @@ const PaymentForm = () => {
       alert(paymentResult.error);
     } else {
       if (paymentResult.paymentIntent.status === "succeeded") {
-        alert(`Payment Successful! Thank you ${name}!`);
+        alert(`Payment Successful! Thank you ${customerName}!`);
 
-        sendEmail(name, checkoutItems, address);
+        sendEmail(
+          customerName,
+          shippingName,
+          checkoutItems,
+          shippingAddress,
+          shippingCity,
+          shippingState,
+          shippingZipCode,
+          phoneNumber
+        );
         // Send email confirmation to customer and admin email
       }
     }
@@ -78,13 +114,61 @@ const PaymentForm = () => {
     <PaymentFormContainer>
       <FormContainer onSubmit={paymentHandler}>
         <h2>Credit Card Payment: </h2>
-        <CardElement />
-        <input
-          value={address}
-          name="address"
+        <FormInput
+          label="Ship To Name"
+          type="text"
+          required
           onChange={handleChange}
-          placeholder="Your Address"
-        ></input>
+          name="shippingName"
+          value={shippingName}
+        />
+
+        <FormInput
+          label="Street Address"
+          type="text"
+          required
+          onChange={handleChange}
+          name="shippingAddress"
+          value={shippingAddress}
+        />
+
+        <FormInput
+          label="City"
+          type="text"
+          required
+          onChange={handleChange}
+          name="shippingCity"
+          value={shippingCity}
+        />
+
+        <FormInput
+          label="State"
+          type="text"
+          required
+          onChange={handleChange}
+          name="shippingState"
+          value={shippingState}
+        />
+
+        <FormInput
+          label="Zip Code"
+          type="text"
+          required
+          onChange={handleChange}
+          name="shippingZipCode"
+          value={shippingZipCode}
+        />
+
+        <FormInput
+          label="Phone Number"
+          type="text"
+          // required
+          onChange={handleChange}
+          name="phoneNumber"
+          value={phoneNumber}
+        />
+
+        <CardElement />
         <PaymentButton isLoading={isProcessingPayment}> Pay Now </PaymentButton>
       </FormContainer>
     </PaymentFormContainer>
