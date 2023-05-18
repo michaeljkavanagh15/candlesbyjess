@@ -2,7 +2,10 @@ import { async } from "@firebase/util";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { selectCartTotal } from "../../store/cart/cart.selector";
+import {
+  selectCartTotal,
+  selectCartItems,
+} from "../../store/cart/cart.selector";
 import { selectCurrentUser } from "../../store/user/user.selector";
 
 import {
@@ -11,13 +14,20 @@ import {
   PaymentButton,
 } from "./payment-form.styles";
 import { getUserDisplayName } from "../../utils/firebase/firebase.utils";
+import { sendEmail } from "../../utils/emailJS/emailJS.utils";
 
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const amount = useSelector(selectCartTotal);
+  const checkoutItems = useSelector(selectCartItems);
   const currentUser = useSelector(selectCurrentUser);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [address, setAddress] = useState("");
+
+  const handleChange = (e) => {
+    setAddress(e.target.value);
+  };
 
   const paymentHandler = async (e) => {
     e.preventDefault();
@@ -57,6 +67,8 @@ const PaymentForm = () => {
     } else {
       if (paymentResult.paymentIntent.status === "succeeded") {
         alert(`Payment Successful! Thank you ${name}!`);
+
+        sendEmail(name, checkoutItems, address);
         // Send email confirmation to customer and admin email
       }
     }
@@ -67,6 +79,12 @@ const PaymentForm = () => {
       <FormContainer onSubmit={paymentHandler}>
         <h2>Credit Card Payment: </h2>
         <CardElement />
+        <input
+          value={address}
+          name="address"
+          onChange={handleChange}
+          placeholder="Your Address"
+        ></input>
         <PaymentButton isLoading={isProcessingPayment}> Pay Now </PaymentButton>
       </FormContainer>
     </PaymentFormContainer>
