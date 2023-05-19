@@ -6,10 +6,10 @@ import {
 } from "../../store/cart/cart.selector";
 
 import CheckoutItem from "../../components/checkout-item/checkout-item.component";
-import PaymentForm from "../../components/payment-form/payment-form.component";
 
-import { CheckoutContainer, Total } from "./checkout.styles";
+import { ButtonContainer, CheckoutContainer, Total } from "./checkout.styles";
 import { setIsCartOpen } from "../../store/cart/cart.reducer";
+import CheckoutSlide from "../../components/checkout-slide/checkout-slide.component";
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -19,13 +19,18 @@ const Checkout = () => {
   dispatch(setIsCartOpen(false));
 
   return (
+    <div>
     <CheckoutContainer>
       {cartItems.map((cartItem) => (
         <CheckoutItem key={cartItem.id} cartItem={cartItem} />
       ))}
-      <Total>Total: ${cartTotal} </Total>
-      <PaymentForm />
-    </CheckoutContainer>
+      </CheckoutContainer>
+      <ButtonContainer>
+        <CheckoutSlide />
+        <Total>Total: ${cartTotal} </Total>
+      </ButtonContainer>
+    
+    </div>
   );
 };
 

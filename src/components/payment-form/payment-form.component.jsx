@@ -113,7 +113,7 @@ const PaymentForm = () => {
   return (
     <PaymentFormContainer>
       <FormContainer onSubmit={paymentHandler}>
-        <h2>Credit Card Payment: </h2>
+        <h2>Checkout Now: </h2>
         <FormInput
           label="Ship To Name"
           type="text"
