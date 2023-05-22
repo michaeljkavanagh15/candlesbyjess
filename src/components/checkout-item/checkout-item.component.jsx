@@ -19,15 +19,16 @@ import {
 import { getItemCategory } from "../../utils/firebase/firebase.utils";
 
 const CheckoutItem = ({ cartItem }) => {
-  const { name, images, price, quantity, id } = cartItem;
+  const { name, images, price, quantity, id, stock } = cartItem;
   const dispatch = useDispatch();
 
   const itemCategory = getItemCategory(id);
   const route = `/shop/${itemCategory}/${id}`;
 
   const clearItemHandler = () => dispatch(clearItemFromCart(cartItem));
-  const addItemHandler = () => dispatch(addItemToCart(cartItem));
+  const addItemHandler = async () => dispatch(addItemToCart(cartItem));
   const removeItemHandler = () => dispatch(removeItemFromCart(cartItem));
+
   return (
     <CheckoutItemContainer>
       <ImageContainer>

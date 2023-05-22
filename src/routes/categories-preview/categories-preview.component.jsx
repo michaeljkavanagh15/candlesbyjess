@@ -1,19 +1,39 @@
-import { useSelector } from "react-redux";
 import { selectCategoriesMap } from "../../store/categories/category.selector";
 import { Fragment } from "react";
 import CategoryPreview from "../../components/category-preview/category-preview.component";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { setCategories } from "../../store/categories/category.reducer";
+import { getCategoriesAndDocuments } from "../../utils/firebase/firebase.utils";
+import { Spinner } from "react-bootstrap";
+
 
 const CategoriesPreview = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    setIsLoading(true)
+    const getCategoriesMap = async () => {
+      const categoriesArray = await getCategoriesAndDocuments();
+      dispatch(setCategories(categoriesArray));
+      setIsLoading(false)
+    };
+    getCategoriesMap();
+
+  }, []);
   const categoriesMap = useSelector(selectCategoriesMap);
   return (
-    <Fragment>
+    isLoading ? <Spinner /> :
+    (<Fragment> 
       {Object.keys(categoriesMap).map((title) => {
-        const products = categoriesMap[title].filter(({ stock }) => stock >= 1);
+        const items = categoriesMap[title].items
+
+        const products = items.filter(({ stock }) => stock >= 1);
         return (
           <CategoryPreview key={title} title={title} products={products} />
         );
       })}
-    </Fragment>
+    </Fragment>)
   );
 };
 

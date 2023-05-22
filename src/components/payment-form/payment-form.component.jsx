@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import {
   selectCartTotal,
@@ -13,9 +13,19 @@ import {
   FormContainer,
   PaymentButton,
 } from "./payment-form.styles";
-import { getUserDisplayName } from "../../utils/firebase/firebase.utils";
+import {
+  getCartItemStock,
+  getCategoriesAndDocuments,
+  getItemStock,
+  getUserDisplayName,
+} from "../../utils/firebase/firebase.utils";
 import { sendEmail } from "../../utils/emailJS/emailJS.utils";
 import CustomerCheckoutForm from "../customer-checkout-form/customer-checkout-form.component";
+import {
+  checkItemQuantityFromCart,
+  setItemQuantityFromCart,
+} from "../../store/cart/cart.reducer";
+import { setCategories } from "../../store/categories/category.reducer";
 
 const defaultFormFields = {
   shippingName: "",
@@ -34,11 +44,7 @@ const PaymentForm = () => {
   const checkoutItems = useSelector(selectCartItems);
   const currentUser = useSelector(selectCurrentUser);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  // const [address, setAddress] = useState("");
-
-  // const handleChange = (e) => {
-  //   setAddress(e.target.value);
-  // };
+  const dispatch = useDispatch();
 
   const [formFields, setFormFields] = useState(defaultFormFields);
   const {
@@ -58,56 +64,69 @@ const PaymentForm = () => {
 
   const paymentHandler = async (e) => {
     e.preventDefault();
+    // checkoutItems.map(async (item) => {
+      // let currentStock = await getItemStock(item);
+      // if (currentStock < item.quantity) {
+      //   alert(
+      //     `Woops! Looks like there's not enough of ${item.name} to go around! We'll adjust your cart for you.`
+      //   );
+      //   dispatch(setItemQuantityFromCart(checkoutItems, item, currentStock));
+      //   return;
+      // } else { }
+        if (!stripe || !elements) {
+          return;
+        }
+        setIsProcessingPayment(true);
 
-    if (!stripe || !elements) {
-      return;
-    }
-    setIsProcessingPayment(true);
+        const response = await fetch(
+          "/.netlify/functions/create-payment-intent",
+          {
+            method: "post",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ amount: amount * 100 }),
+          }
+        ).then((res) => res.json());
+        const clientSecret = response.paymentIntent.client_secret;
 
-    const response = await fetch("/.netlify/functions/create-payment-intent", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ amount: amount * 100 }),
-    }).then((res) => res.json());
-    const clientSecret = response.paymentIntent.client_secret;
+        let customerName = currentUser
+          ? currentUser.displayName
+            ? currentUser.displayName
+            : await getUserDisplayName(currentUser.uid)
+          : "Guest";
+        const paymentResult = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: elements.getElement(CardElement),
+            billing_details: {
+              name: customerName,
+            },
+          },
+        });
 
-    let customerName = currentUser
-      ? currentUser.displayName
-        ? currentUser.displayName
-        : await getUserDisplayName(currentUser.uid)
-      : "Guest";
-    const paymentResult = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement),
-        billing_details: {
-          name: customerName,
-        },
-      },
-    });
+        setIsProcessingPayment(false);
 
-    setIsProcessingPayment(false);
+        if (paymentResult.error) {
+          alert(paymentResult.error);
+        } else {
+          if (paymentResult.paymentIntent.status === "succeeded") {
+            alert(`Payment Successful! Thank you ${customerName}!`);
 
-    if (paymentResult.error) {
-      alert(paymentResult.error);
-    } else {
-      if (paymentResult.paymentIntent.status === "succeeded") {
-        alert(`Payment Successful! Thank you ${customerName}!`);
-
-        sendEmail(
-          customerName,
-          shippingName,
-          checkoutItems,
-          shippingAddress,
-          shippingCity,
-          shippingState,
-          shippingZipCode,
-          phoneNumber
-        );
-        // Send email confirmation to customer and admin email
-      }
-    }
+            sendEmail(
+              customerName,
+              shippingName,
+              checkoutItems,
+              shippingAddress,
+              shippingCity,
+              shippingState,
+              shippingZipCode,
+              phoneNumber
+            );
+            // Send email confirmation to customer and admin email
+          }
+        }
+      
+    // });
   };
 
   return (

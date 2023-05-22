@@ -7,17 +7,17 @@ export const CartItemContainer = styled.div`
   margin-bottom: 15px;
 
   img {
-    width: 30%;
+    width: 50%;
   }
 `;
 
 export const ItemDetails = styled.div`
-  width: 70%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  padding: 10px 20px;
+  padding: 5px 7px;
 
   span {
     font-size: 16px;

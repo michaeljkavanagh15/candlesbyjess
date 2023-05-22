@@ -6,6 +6,7 @@ import PaymentForm from "../../components/payment-form/payment-form.component";
 
 
 const CheckoutSlide = () => {
+    // change state to gloabal variable to control opening and closing. Can add checkout button to cart dropdown
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);

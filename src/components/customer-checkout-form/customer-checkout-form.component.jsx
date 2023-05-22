@@ -23,7 +23,7 @@ const CustomerCheckoutForm = () => {
 
   
   return (
-    <div>
+    <form>
       <FormInput
         label="Customer Name"
         type="text"
@@ -69,7 +69,7 @@ const CustomerCheckoutForm = () => {
         value={phoneNumber}
       />
 
-    </div>
+    </form>
   );
 };
 

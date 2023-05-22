@@ -11,9 +11,9 @@ export const selectCategoriesMap = createSelector(
   [selectCategories],
   (categories) =>
     categories.reduce((acc, category) => {
-      const { title, items } = category;
+      const { title, items, images, route } = category;
       try {
-        acc[title.toLowerCase()] = items;
+        acc[title.toLowerCase()] = {"items": items, "route": route, "images": images};
         return acc;
       } catch (error) {
         console.log("Unexpected error occured. Please try refreshing.");
