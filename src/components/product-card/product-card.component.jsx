@@ -12,7 +12,7 @@ import { addItemToCart } from "../../store/cart/cart.reducer";
 
 const ProductCard = ({ product, category }) => {
   const { price, name, images, id } = product;
-  const route = `/shop/${category}/${id}`;
+  const route = `/shop/${category}/${id}/`;
   const dispatch = useDispatch();
 
   const addProductToCart = () => dispatch(addItemToCart(product));

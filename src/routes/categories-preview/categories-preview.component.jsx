@@ -6,34 +6,41 @@ import { useEffect, useState } from "react";
 import { setCategories } from "../../store/categories/category.reducer";
 import { getCategoriesAndDocuments } from "../../utils/firebase/firebase.utils";
 import { Spinner } from "react-bootstrap";
-
+import NotFound from "../../components/not-found/not-found.component";
 
 const CategoriesPreview = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     const getCategoriesMap = async () => {
       const categoriesArray = await getCategoriesAndDocuments();
       dispatch(setCategories(categoriesArray));
-      setIsLoading(false)
+      setIsLoading(false);
     };
     getCategoriesMap();
-
   }, []);
   const categoriesMap = useSelector(selectCategoriesMap);
-  return (
-    isLoading ? <Spinner /> :
-    (<Fragment> 
+
+  return isLoading ? (
+    <Spinner />
+  ) : (
+    <Fragment>
+    
       {Object.keys(categoriesMap).map((title) => {
-        const items = categoriesMap[title].items
+        try {
+        const items = categoriesMap[title].items;
 
         const products = items.filter(({ stock }) => stock >= 1);
         return (
           <CategoryPreview key={title} title={title} products={products} />
         );
+      } 
+      catch (error) {
+        return <NotFound />
+      }
       })}
-    </Fragment>)
+    </Fragment>
   );
 };
 

@@ -9,6 +9,7 @@ import { setCategories } from "../../store/categories/category.reducer";
 import { getCategoriesAndDocuments } from "../../utils/firebase/firebase.utils";
 
 import { Spinner } from "react-bootstrap";
+import NotFound from "../../components/not-found/not-found.component";
 
 
 const Category = () => {
@@ -30,22 +31,23 @@ const Category = () => {
         setIsLoading(false)
       };
        getCategoriesMap();
-      setProducts(categoriesMap[category].items.filter(({ stock }) => stock >= 1))
+      categoriesMap[category] && setProducts(categoriesMap[category].items.filter(({ stock }) => stock >= 1))
 
   }, []);
 
 
   useEffect(() => {
-    products &&
+    categoriesMap[category] && products &&
       setProducts(categoriesMap[category].items.filter(({ stock }) => stock >= 1));
   }, [category, categoriesMap]);
+
   return (
     <Routes>
       <Route
-        path="*"
+        // path="*"
         index
         element={
-          isLoading ? <Spinner /> :
+          isLoading ? <Spinner /> : (categoriesMap[category] ?
           <Fragment>
             <Title>
               {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -65,10 +67,14 @@ const Category = () => {
                 </OutOfStockMessage>
               )}
             </CategoryContainer>
-          </Fragment>
+          </Fragment> : <NotFound />)
         }
+
+
       />
-      <Route path=":id" element={<ProductPage products={products} />} />
+      <Route path=":id/" element={<ProductPage products={products} />} />
+    <Route path="*" element={<NotFound />} />
+
     </Routes>
   );
 };
