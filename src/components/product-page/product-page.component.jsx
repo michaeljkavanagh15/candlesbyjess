@@ -45,9 +45,9 @@ const ProductPage = ({ products }) => {
   if (isFinite(id)) {
    item = categoriesMap[category].items.filter((product) => product.id === parseInt(id));
   }
-
+console.log(item);
     const { name, stock, price, scent, description, images } = item[0]
-    const addProductToCart = () => dispatch(addItemToCart(item[0]));
+    const addProductToCart = () => dispatch(addItemToCart([item[0], item[0].stock]));
 
   
   return (

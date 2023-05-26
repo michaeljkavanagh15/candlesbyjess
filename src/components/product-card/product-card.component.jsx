@@ -9,13 +9,19 @@ import { useDispatch } from "react-redux";
 
 import Button from "../button/button.component";
 import { addItemToCart } from "../../store/cart/cart.reducer";
+import { selectCategoriesMap } from "../../store/categories/category.selector";
+import { useSelector } from "react-redux";
 
 const ProductCard = ({ product, category }) => {
   const { price, name, images, id } = product;
   const route = `/shop/${category}/${id}/`;
   const dispatch = useDispatch();
+  const categoriesMap = useSelector(selectCategoriesMap);
+  const item = categoriesMap[category].items.filter(
+    (product) => product.id === parseInt(id)
+  );
 
-  const addProductToCart = () => dispatch(addItemToCart(product));
+  const addProductToCart = () => dispatch(addItemToCart([product, item[0].stock]));
 
   return (
     <div>

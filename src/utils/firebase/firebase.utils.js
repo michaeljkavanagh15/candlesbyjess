@@ -1,6 +1,5 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import {
   getAuth,
@@ -160,19 +159,19 @@ export const getUserDisplayName = async (userID) => {
   return userSnapShot.data().displayName;
 };
 
-export const getCartItemStock = async (cartItems) => {
-  const itemRef = collection(db, "categories");
-  const catArr = [];
-  const itemArr = [];
+// export const getCartItemStock = async (cartItems) => {
+//   const itemRef = collection(db, "categories");
+//   const catArr = [];
+//   const itemArr = [];
 
-  cartItems.map(async (cartItem) => {
-    const q = query(collection(db, "categories"));
-    const querySnapshot = await getDocs(q);
-    const catMap = querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
-    catMap.forEach((category) => catArr.push(category.items));
-    catArr.forEach((arr) => itemArr.push(...arr));
-  });
-};
+//   cartItems.map(async (cartItem) => {
+//     const q = query(collection(db, "categories"));
+//     const querySnapshot = await getDocs(q);
+//     const catMap = querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
+//     catMap.forEach((category) => catArr.push(category.items));
+//     catArr.forEach((arr) => itemArr.push(...arr));
+//   });
+// };
 
 export const getDocsFromCategory = async (category) => {
   const q = query(
@@ -185,35 +184,37 @@ export const getDocsFromCategory = async (category) => {
   return catMap;
 }
 
-export const getItemStock = async (cartItem) => {
-  const catArr = [];
-  const itemArr = [];
-  console.log(cartItem.itemCategoy);
-  const q = query(
-    collection(db, "categories"),
-    where(
-      "title",
-      "==",
-      `${
-        cartItem.itemCategoy.charAt(0).toUpperCase() +
-        cartItem.itemCategoy.slice(1)
-      }`
-    )
-  );
+// export const getItemStock = async (cartItem) => {
+//   const catArr = [];
+//   const itemArr = [];
+//   console.log(cartItem.itemCategoy);
+//   const q = query(
+//     collection(db, "categories"),
+//     where(
+//       "title",
+//       "==",
+//       `${
+//         cartItem.itemCategoy.charAt(0).toUpperCase() +
+//         cartItem.itemCategoy.slice(1)
+//       }`
+//     )
+//   );
 
-  const querySnapshot = await getDocs(q);
-  const catMap = querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
-  try {
-    const indexedItem = catMap[0].items.filter((item) => item.id == cartItem.id)
-    const indexedItemStock = indexedItem[0].stock
-    return indexedItemStock
-  } catch (error) {
-    console.log("Category Index error in Utils File");
-  }
+//   const querySnapshot = await getDocs(q);
+//   const catMap = querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
+//   try {
+//     const indexedItem = catMap[0].items.filter((item) => item.id == cartItem.id)
+//     const indexedItemStock = indexedItem[0].stock
+//     return indexedItemStock
+//   } catch (error) {
+//     console.log("Category Index error in Utils File");
+//   }
 
 
 
-};
+// };
+
+
 
 export const getItemCategory = (id) => {
   if (id <= 1999) {

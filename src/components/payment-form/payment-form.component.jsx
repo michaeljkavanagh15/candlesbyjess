@@ -26,6 +26,7 @@ import {
   setItemQuantityFromCart,
 } from "../../store/cart/cart.reducer";
 import { setCategories } from "../../store/categories/category.reducer";
+import { useCheckCartItemQuantity } from "../../utils/cart/cart.utils";
 
 const defaultFormFields = {
   shippingName: "",
@@ -56,6 +57,13 @@ const PaymentForm = () => {
     phoneNumber,
   } = formFields;
 
+if (useCheckCartItemQuantity(checkoutItems)) {
+  console.log("Check passed");
+} else {
+  
+  console.log("checkFailed");
+}
+
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -64,69 +72,56 @@ const PaymentForm = () => {
 
   const paymentHandler = async (e) => {
     e.preventDefault();
-    // checkoutItems.map(async (item) => {
-      // let currentStock = await getItemStock(item);
-      // if (currentStock < item.quantity) {
-      //   alert(
-      //     `Woops! Looks like there's not enough of ${item.name} to go around! We'll adjust your cart for you.`
-      //   );
-      //   dispatch(setItemQuantityFromCart(checkoutItems, item, currentStock));
-      //   return;
-      // } else { }
-        if (!stripe || !elements) {
-          return;
-        }
-        setIsProcessingPayment(true);
 
-        const response = await fetch(
-          "/.netlify/functions/create-payment-intent",
-          {
-            method: "post",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ amount: amount * 100 }),
-          }
-        ).then((res) => res.json());
-        const clientSecret = response.paymentIntent.client_secret;
+    if (!stripe || !elements) {
+      return;
+    }
+    setIsProcessingPayment(true);
 
-        let customerName = currentUser
-          ? currentUser.displayName
-            ? currentUser.displayName
-            : await getUserDisplayName(currentUser.uid)
-          : "Guest";
-        const paymentResult = await stripe.confirmCardPayment(clientSecret, {
-          payment_method: {
-            card: elements.getElement(CardElement),
-            billing_details: {
-              name: customerName,
-            },
-          },
-        });
+    const response = await fetch("/.netlify/functions/create-payment-intent", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ amount: amount * 100 }),
+    }).then((res) => res.json());
+    const clientSecret = response.paymentIntent.client_secret;
 
-        setIsProcessingPayment(false);
+    let customerName = currentUser
+      ? currentUser.displayName
+        ? currentUser.displayName
+        : await getUserDisplayName(currentUser.uid)
+      : "Guest";
+    const paymentResult = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: elements.getElement(CardElement),
+        billing_details: {
+          name: customerName,
+        },
+      },
+    });
 
-        if (paymentResult.error) {
-          alert(paymentResult.error);
-        } else {
-          if (paymentResult.paymentIntent.status === "succeeded") {
-            alert(`Payment Successful! Thank you ${customerName}!`);
+    setIsProcessingPayment(false);
 
-            sendEmail(
-              customerName,
-              shippingName,
-              checkoutItems,
-              shippingAddress,
-              shippingCity,
-              shippingState,
-              shippingZipCode,
-              phoneNumber
-            );
-            // Send email confirmation to customer and admin email
-          }
-        }
-      
-    // });
+    if (paymentResult.error) {
+      alert(paymentResult.error.message);
+    } else {
+      if (paymentResult.paymentIntent.status === "succeeded") {
+        alert(`Payment Successful! Thank you ${customerName}!`);
+
+        sendEmail(
+          customerName,
+          shippingName,
+          checkoutItems,
+          shippingAddress,
+          shippingCity,
+          shippingState,
+          shippingZipCode,
+          phoneNumber
+        );
+        // Send email confirmation to admin email
+      }
+    }
   };
 
   return (

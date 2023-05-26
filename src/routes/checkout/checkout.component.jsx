@@ -6,10 +6,14 @@ import {
 } from "../../store/cart/cart.selector";
 
 import CheckoutItem from "../../components/checkout-item/checkout-item.component";
+import { useEffect, useState } from "react";
+import { getCategoriesAndDocuments } from "../../utils/firebase/firebase.utils";
 
 import { ButtonContainer, CheckoutContainer, Total } from "./checkout.styles";
 import { setIsCartOpen } from "../../store/cart/cart.reducer";
 import CheckoutSlide from "../../components/checkout-slide/checkout-slide.component";
+import { setCategories } from "../../store/categories/category.reducer";
+import { Spinner } from "react-bootstrap";
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -17,8 +21,19 @@ const Checkout = () => {
   const cartTotal = useSelector(selectCartTotal);
 
   dispatch(setIsCartOpen(false));
-
-  return (
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    setIsLoading(true);
+    const getCategoriesMap = async () => {
+      const categoriesArray = await getCategoriesAndDocuments();
+      dispatch(setCategories(categoriesArray));
+      setIsLoading(false);
+    };
+    getCategoriesMap();
+  }, []);
+  
+  return isLoading ? <Spinner /> :
+   (
     <div>
     <CheckoutContainer>
       {cartItems.map((cartItem) => (

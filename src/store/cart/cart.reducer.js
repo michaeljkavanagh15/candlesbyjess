@@ -1,41 +1,51 @@
 import { createSlice, current } from "@reduxjs/toolkit";
+import { useCheckCartItemQuantity } from "../../utils/cart/cart.utils";
 
 const CART_INITIAL_STATE = {
   isCartOpen: false,
   cartItems: [],
 };
 
-const addCartItem = (cartItems, productToAdd) => {
+const addCartItem = (cartItems, payload) => {
+  const productToAdd = payload[0];
+  const newItemStock = payload[1];
   const existingCartItem = cartItems.find(
     (cartItem) => cartItem.id === productToAdd.id
   );
-
+  console.log(newItemStock);
   if (
     existingCartItem &&
-    existingCartItem.stock > 0 &&
-    existingCartItem.stock > existingCartItem.quantity
+    newItemStock > 0 &&
+    newItemStock > existingCartItem.quantity
   ) {
     return cartItems.map((cartItem) =>
       cartItem.id === productToAdd.id
         ? { ...cartItem, quantity: cartItem.quantity + 1 }
         : cartItem
     );
-  } else if (
-    existingCartItem &&
-    existingCartItem.stock <= existingCartItem.quantity
-  ) {
-    alert(`Sorry! There's only ${existingCartItem.stock} in stock!`);
+  } else if (existingCartItem && newItemStock === existingCartItem.quantity) {
+    alert(
+      `Woops! Looks like you've got all the available ${existingCartItem.name} in your cart!`
+    );
+    return [...cartItems];
+  } else if (existingCartItem && newItemStock <= existingCartItem.quantity) {
+    alert(
+      `Sorry! There's only ${newItemStock} in stock! We'll Adjust your cart for you.`
+    );
     return cartItems.map((cartItem) =>
       cartItem.id === productToAdd.id
-        ? { ...cartItem, quantity: cartItem.stock }
+        ? { ...cartItem, quantity: newItemStock }
         : cartItem
     );
   }
 
   return [...cartItems, { ...productToAdd, quantity: 1 }];
 };
-
-const removeCartItem = (cartItems, cartItemToRemove) => {
+// TODO: adjust removeCart Item to make it recieve current stock value
+const removeCartItem = (cartItems, payload) => {
+  const cartItemToRemove = payload[0];
+  const newItemStock = payload[1];
+  console.log(cartItemToRemove);
   // find the cart item to remove
   const existingCartItem = cartItems.find(
     (cartItem) => cartItem.id === cartItemToRemove.id
@@ -44,30 +54,39 @@ const removeCartItem = (cartItems, cartItemToRemove) => {
   // check if quantity is equal to 1, if it is remove that item from the cart
   if (existingCartItem.quantity === 1) {
     return cartItems.filter((cartItem) => cartItem.id !== cartItemToRemove.id);
+  } else if (existingCartItem.quantity > newItemStock) {
+    alert(
+      `Woops! Looks like you've more than the available ${existingCartItem.name} in your cart! We'll adjust it for you.`
+    );
+    return cartItems.map((cartItem) =>
+      cartItem.id === cartItemToRemove.id
+        ? { ...cartItem, quantity: newItemStock }
+        : cartItem
+    );
+  } else {
+    // return back cartitems with matching cart item with reduced quantity
+    return cartItems.map((cartItem) =>
+      cartItem.id === cartItemToRemove.id
+        ? { ...cartItem, quantity: cartItem.quantity - 1 }
+        : cartItem
+    );
   }
-
-  // return back cartitems with matching cart item with reduced quantity
-  return cartItems.map((cartItem) =>
-    cartItem.id === cartItemToRemove.id
-      ? { ...cartItem, quantity: cartItem.quantity - 1 }
-      : cartItem
-  );
 };
 
 const clearCartItem = (cartItems, cartItemToClear) =>
   cartItems.filter((cartItem) => cartItem.id !== cartItemToClear.id);
 
 const setCartItemQuantity = (cartItems, cartItemToSet, currentStock) => {
-  console.log("Quant Setter in Reducer:  " + currentStock)
+  console.log("Quant Setter in Reducer:  " + currentStock);
   const existingCartItem = cartItems.find(
     (cartItem) => cartItem.id === cartItemToSet.id
   );
   return cartItems.map((cartItem) => {
-  console.log(cartItem)
+    console.log(cartItem);
     return cartItem.id === existingCartItem.id
       ? { ...cartItem, quantity: currentStock }
-      : cartItem
-});
+      : cartItem;
+  });
 };
 
 const checkCartItemQuantity = (cartItems) => {
@@ -75,10 +94,9 @@ const checkCartItemQuantity = (cartItems) => {
     if (cartItem.stock < cartItem.quantity) {
       return false;
     }
-  })
+  });
 
   return true;
-
 };
 
 export const cartSlice = createSlice({
@@ -106,8 +124,12 @@ export const cartSlice = createSlice({
     },
 
     setItemQuantityFromCart(state, action, currentStock) {
-      state.cartItems = setCartItemQuantity(state.cartItems, action.payload, currentStock)
-    }
+      state.cartItems = setCartItemQuantity(
+        state.cartItems,
+        action.payload,
+        currentStock
+      );
+    },
   },
 });
 
@@ -117,7 +139,7 @@ export const {
   removeItemFromCart,
   clearItemFromCart,
   checkItemQuantityFromCart,
-  setItemQuantityFromCart
+  setItemQuantityFromCart,
 } = cartSlice.actions;
 
 export const cartReducer = cartSlice.reducer;

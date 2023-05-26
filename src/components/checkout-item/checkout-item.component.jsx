@@ -5,6 +5,8 @@ import {
   addItemToCart,
   removeItemFromCart,
 } from "../../store/cart/cart.reducer";
+import { selectCategoriesMap } from "../../store/categories/category.selector";
+import { useSelector } from "react-redux";
 
 import {
   CheckoutItemContainer,
@@ -19,15 +21,26 @@ import {
 import { getItemCategory } from "../../utils/firebase/firebase.utils";
 
 const CheckoutItem = ({ cartItem }) => {
-  const { name, images, price, quantity, id, stock } = cartItem;
+  const { name, images, price, quantity, id, stock, itemCategoy } = cartItem;
   const dispatch = useDispatch();
+  const categoriesMap = useSelector(selectCategoriesMap);
+  let item;
+  try {
+    item = categoriesMap[itemCategoy].items.filter(
+      (product) => product.id === parseInt(id)
+    );
+  } catch (error) {
+    console.log(error);
+  }
 
   const itemCategory = getItemCategory(id);
   const route = `/shop/${itemCategory}/${id}`;
 
   const clearItemHandler = () => dispatch(clearItemFromCart(cartItem));
-  const addItemHandler = async () => dispatch(addItemToCart(cartItem));
-  const removeItemHandler = () => dispatch(removeItemFromCart(cartItem));
+  const addItemHandler = async () =>
+    dispatch(addItemToCart([cartItem, item[0].stock]));
+  const removeItemHandler = () =>
+    dispatch(removeItemFromCart([cartItem, item[0].stock]));
 
   return (
     <CheckoutItemContainer>
