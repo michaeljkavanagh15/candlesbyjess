@@ -16,12 +16,13 @@ import {
 import { setCurrentUser } from "./store/user/user.reducer";
 import { useEffect } from "react";
 import NotFound from "./components/not-found/not-found.component";
+// const dispatch = useDispatch();
+
 
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     const unsubscribe = onAuthStateChangedListener(async (user) => {
-
       const pickedUser =
         user && (({ accessToken, email, displayName, uid }) => ({ accessToken, email, displayName, uid }))(user);
       dispatch(setCurrentUser(pickedUser));

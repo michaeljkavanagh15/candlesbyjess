@@ -13,6 +13,7 @@ const Shop = () => {
     const getCategoriesMap = async () => {
       const categoriesArray = await getCategoriesAndDocuments();
       dispatch(setCategories(categoriesArray));
+      console.log("shop component dispatch");
     };
     getCategoriesMap();
   }, []);

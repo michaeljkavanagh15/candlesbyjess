@@ -13,20 +13,13 @@ import {
   FormContainer,
   PaymentButton,
 } from "./payment-form.styles";
-import {
-  getCartItemStock,
-  getCategoriesAndDocuments,
-  getItemStock,
-  getUserDisplayName,
-} from "../../utils/firebase/firebase.utils";
+import { getUserDisplayName } from "../../utils/firebase/firebase.utils";
 import { sendEmail } from "../../utils/emailJS/emailJS.utils";
-import CustomerCheckoutForm from "../customer-checkout-form/customer-checkout-form.component";
+
 import {
-  checkItemQuantityFromCart,
-  setItemQuantityFromCart,
-} from "../../store/cart/cart.reducer";
-import { setCategories } from "../../store/categories/category.reducer";
-import { useCheckCartItemQuantity } from "../../utils/cart/cart.utils";
+  checkCartItemStock,
+  useCheckCartItemQuantity,
+} from "../../utils/cart/cart.utils";
 
 const defaultFormFields = {
   shippingName: "",
@@ -37,15 +30,30 @@ const defaultFormFields = {
   customerState: "",
   phoneNumber: "",
 };
+// TODO: add total amount & styling to end of payment form
 
 const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const amount = useSelector(selectCartTotal);
-  const checkoutItems = useSelector(selectCartItems);
+
   const currentUser = useSelector(selectCurrentUser);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const dispatch = useDispatch();
+  const checkoutItems = useSelector(selectCartItems);
+  useCheckCartItemQuantity(checkoutItems);
+  const amount = useSelector(selectCartTotal);
+
+  const cartItemStockCheck = async (e) => {
+    e.preventDefault();
+    if (await checkCartItemStock(checkoutItems)) {
+      paymentHandler();
+    } else {
+      alert(
+        "Looks like something in your cart doesn't have enough stock! Click OK to refresh the page."
+      );
+      window.location.reload(false);
+    }
+  };
 
   const [formFields, setFormFields] = useState(defaultFormFields);
   const {
@@ -57,22 +65,13 @@ const PaymentForm = () => {
     phoneNumber,
   } = formFields;
 
-if (useCheckCartItemQuantity(checkoutItems)) {
-  console.log("Check passed");
-} else {
-  
-  console.log("checkFailed");
-}
-
   const handleChange = (event) => {
     const { name, value } = event.target;
 
     setFormFields({ ...formFields, [name]: value });
   };
 
-  const paymentHandler = async (e) => {
-    e.preventDefault();
-
+  const paymentHandler = async () => {
     if (!stripe || !elements) {
       return;
     }
@@ -102,7 +101,6 @@ if (useCheckCartItemQuantity(checkoutItems)) {
     });
 
     setIsProcessingPayment(false);
-
     if (paymentResult.error) {
       alert(paymentResult.error.message);
     } else {
@@ -126,7 +124,7 @@ if (useCheckCartItemQuantity(checkoutItems)) {
 
   return (
     <PaymentFormContainer>
-      <FormContainer onSubmit={paymentHandler}>
+      <FormContainer onSubmit={cartItemStockCheck}>
         <h2>Checkout Now: </h2>
         <FormInput
           label="Ship To Name"

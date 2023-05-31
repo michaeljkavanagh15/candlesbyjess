@@ -4,7 +4,7 @@ export const sendEmail = (customerName, shippingName, checkoutItems={}, shipping
   let stringCheckoutItems = "";
   checkoutItems.forEach((item, index) => {
     stringCheckoutItems += `Item #${index + 1}: price: $ ${item.price}, name: ${item.name}, quantity: ${item.quantity}, scent: ${item.scent}, item_id: ${item.id}.
-    There are ${item.stock} remaining\n`;
+  \n`;
   });
   let templateParams = {
     customerName: customerName,

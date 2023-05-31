@@ -8,9 +8,7 @@ import {
 } from "./directory-item.styles";
 
 const DirectoryItem = ( {title, images, route} ) => {
-  // const catMap = getDocsFromCategory(category)
-  // console.log("catmap => " + catMap);
-  // const { images, title, route } = category;
+
   const navigate = useNavigate();
   const onNavigateHandler = () => navigate(route);
 

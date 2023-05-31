@@ -6,23 +6,26 @@ const CART_INITIAL_STATE = {
   cartItems: [],
 };
 
+// TODO maybe have a bootstrap modal to pop up when the stock check fails to
+// ask the user if they want to update the stock or remove it from the cart
+
+// TODO maybe have a botstrap alert message instead of the standard JS alert
 const addCartItem = (cartItems, payload) => {
   const productToAdd = payload[0];
   const newItemStock = payload[1];
   const existingCartItem = cartItems.find(
     (cartItem) => cartItem.id === productToAdd.id
   );
-  console.log(newItemStock);
   if (
     existingCartItem &&
     newItemStock > 0 &&
     newItemStock > existingCartItem.quantity
   ) {
-    return cartItems.map((cartItem) =>
-      cartItem.id === productToAdd.id
+    return cartItems.map((cartItem) => {
+      return cartItem.id === productToAdd.id
         ? { ...cartItem, quantity: cartItem.quantity + 1 }
-        : cartItem
-    );
+        : cartItem;
+    });
   } else if (existingCartItem && newItemStock === existingCartItem.quantity) {
     alert(
       `Woops! Looks like you've got all the available ${existingCartItem.name} in your cart!`
@@ -41,11 +44,31 @@ const addCartItem = (cartItems, payload) => {
 
   return [...cartItems, { ...productToAdd, quantity: 1 }];
 };
-// TODO: adjust removeCart Item to make it recieve current stock value
+
+const updateCartItems = (cartItems, payload) => {
+  const arr = [];
+  cartItems.map((cartItem) => {
+    const cat = cartItem.itemCategoy;
+    payload.map((item) => {
+      if (item.title.toLowerCase() === cat.toLowerCase()) {
+        let thisItem = item.items.filter((i) => i.id === cartItem.id)[0];
+        thisItem = { ...thisItem, quantity: cartItem.quantity };
+        return arr.push(thisItem);
+      }
+    });
+  });
+
+  return [...arr];
+};
+
+const clearAllCartItems = () => {
+  console.log("cleared all cart items");
+  return [];
+};
+
 const removeCartItem = (cartItems, payload) => {
   const cartItemToRemove = payload[0];
   const newItemStock = payload[1];
-  console.log(cartItemToRemove);
   // find the cart item to remove
   const existingCartItem = cartItems.find(
     (cartItem) => cartItem.id === cartItemToRemove.id
@@ -76,15 +99,15 @@ const removeCartItem = (cartItems, payload) => {
 const clearCartItem = (cartItems, cartItemToClear) =>
   cartItems.filter((cartItem) => cartItem.id !== cartItemToClear.id);
 
-const setCartItemQuantity = (cartItems, cartItemToSet, currentStock) => {
-  console.log("Quant Setter in Reducer:  " + currentStock);
+const setCartItemQuantity = (cartItems, payload) => {
+  const cartItemToSet = payload[0];
+  const newItemStock = payload[1];
   const existingCartItem = cartItems.find(
     (cartItem) => cartItem.id === cartItemToSet.id
   );
   return cartItems.map((cartItem) => {
-    console.log(cartItem);
     return cartItem.id === existingCartItem.id
-      ? { ...cartItem, quantity: currentStock }
+      ? { ...cartItem, quantity: newItemStock }
       : cartItem;
   });
 };
@@ -123,12 +146,16 @@ export const cartSlice = createSlice({
       state.cartItems = checkCartItemQuantity(state.cartItems, action.payload);
     },
 
-    setItemQuantityFromCart(state, action, currentStock) {
-      state.cartItems = setCartItemQuantity(
-        state.cartItems,
-        action.payload,
-        currentStock
-      );
+    setItemQuantityFromCart(state, action) {
+      state.cartItems = setCartItemQuantity(state.cartItems, action.payload);
+    },
+
+    updateItemsInCart(state, action) {
+      state.cartItems = updateCartItems(state.cartItems, action.payload);
+    },
+
+    clearAllCartItemsFromCart(state) {
+      state.cartItems = clearAllCartItems();
     },
   },
 });
@@ -140,6 +167,8 @@ export const {
   clearItemFromCart,
   checkItemQuantityFromCart,
   setItemQuantityFromCart,
+  updateItemsInCart,
+  clearAllCartItemsFromCart,
 } = cartSlice.actions;
 
 export const cartReducer = cartSlice.reducer;

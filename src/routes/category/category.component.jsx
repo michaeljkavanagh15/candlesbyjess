@@ -32,7 +32,6 @@ const Category = () => {
       };
        getCategoriesMap();
       categoriesMap[category] && setProducts(categoriesMap[category].items.filter(({ stock }) => stock >= 1))
-
   }, []);
 
 

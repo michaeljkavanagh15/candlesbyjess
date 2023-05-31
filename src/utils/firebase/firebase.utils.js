@@ -23,7 +23,7 @@ import {
   where,
 } from "firebase/firestore";
 
-// Your web app's Firebase configuration
+// Firebase configuration
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -66,7 +66,7 @@ export const addCollectionAndDocuments = async (
   await batch.commit();
   console.log("done");
 };
-
+// TODO make function to deduct the stock in the DB by the item.quantity
 // Retreive data from Firebase
 export const getCategoriesAndDocuments = async () => {
   const collectionRef = collection(db, "categories");
@@ -75,35 +75,6 @@ export const getCategoriesAndDocuments = async () => {
   const querySnapshot = await getDocs(q);
   return querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
 };
-
-// export const createUserDocumentFromAuth = async (
-//   userAuth,
-//   additionalInformation = {}
-// ) => {
-//   if (!userAuth) return;
-
-//   const userDocRef = doc(db, "users", userAuth.uid);
-
-//   const userSnapshot = await getDoc(userDocRef);
-
-//   if (!userSnapshot.exists()) {
-//     const { displayName, email } = userAuth;
-//     const createdAt = new Date();
-
-//     try {
-//       await setDoc(userDocRef, {
-//         displayName,
-//         email,
-//         createdAt,
-//         ...additionalInformation,
-//       });
-//     } catch (error) {
-//       console.log("error creating the user", error.message);
-//     }
-//   }
-
-//   return userDocRef;
-// };
 
 export const createUserDocumentFromAuth = async (
   userAuth,
@@ -183,36 +154,6 @@ export const getDocsFromCategory = async (category) => {
   const catMap = querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
   return catMap;
 }
-
-// export const getItemStock = async (cartItem) => {
-//   const catArr = [];
-//   const itemArr = [];
-//   console.log(cartItem.itemCategoy);
-//   const q = query(
-//     collection(db, "categories"),
-//     where(
-//       "title",
-//       "==",
-//       `${
-//         cartItem.itemCategoy.charAt(0).toUpperCase() +
-//         cartItem.itemCategoy.slice(1)
-//       }`
-//     )
-//   );
-
-//   const querySnapshot = await getDocs(q);
-//   const catMap = querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
-//   try {
-//     const indexedItem = catMap[0].items.filter((item) => item.id == cartItem.id)
-//     const indexedItemStock = indexedItem[0].stock
-//     return indexedItemStock
-//   } catch (error) {
-//     console.log("Category Index error in Utils File");
-//   }
-
-
-
-// };
 
 
 
