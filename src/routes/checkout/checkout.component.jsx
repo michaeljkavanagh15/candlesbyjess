@@ -14,8 +14,8 @@ import { ButtonContainer, CheckoutContainer, Total } from "./checkout.styles";
 import { setIsCartOpen } from "../../store/cart/cart.reducer";
 import CheckoutSlide from "../../components/checkout-slide/checkout-slide.component";
 import { setCategories } from "../../store/categories/category.reducer";
-import { Spinner } from "react-bootstrap";
 import { useCheckCartItemQuantity } from "../../utils/cart/cart.utils";
+import LoadingSpinner from "../../components/loading-spinner/loading-spinner.component";
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -38,13 +38,13 @@ const Checkout = () => {
     getCategoriesMap();
   }, []);
   
-  return isLoading ? <Spinner /> :
+  return isLoading ? <LoadingSpinner /> :
    (
     <div>
     <CheckoutContainer>
-      {cartItems.map((cartItem) => (
+      {cartItems.length ? cartItems.map((cartItem) => (
         <CheckoutItem key={cartItem.id} cartItem={cartItem} />
-      ))}
+      )) : <h3>Your cart is empty!</h3>}
       </CheckoutContainer>
       <ButtonContainer>
         <CheckoutSlide />

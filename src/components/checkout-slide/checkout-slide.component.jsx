@@ -11,7 +11,7 @@ const CheckoutSlide = () => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  
   return (
     <>
       <CheckoutNowButton  onClick={handleShow}>

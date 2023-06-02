@@ -24,6 +24,7 @@ import {
   useCheckCartItemQuantity,
 } from "../../utils/cart/cart.utils";
 import { clearAllCartItemsFromCart } from "../../store/cart/cart.reducer";
+import { useNavigate } from "react-router-dom";
 
 const defaultFormFields = {
   shippingName: "",
@@ -34,8 +35,6 @@ const defaultFormFields = {
   customerState: "",
   phoneNumber: "",
 };
-// TODO: add total amount & styling to end of payment form
-// TODO: add checkout confirmation or rerouting once checkout is complete
 
 const PaymentForm = () => {
   const stripe = useStripe();
@@ -47,6 +46,7 @@ const PaymentForm = () => {
   const checkoutItems = useSelector(selectCartItems);
   useCheckCartItemQuantity(checkoutItems);
   const amount = useSelector(selectCartTotal);
+  const navigate = useNavigate();
 
   const handlePaymentFormSubmit = async (e) => {
     e.preventDefault();
@@ -56,7 +56,7 @@ const PaymentForm = () => {
       await paymentHandler();
       await updateDatabaseStock(checkoutItems);
       dispatch(clearAllCartItemsFromCart());
-      window.location.reload(false);
+      navigate("/shop");
     } else {
       alert(
         "Looks like something in your cart doesn't have enough stock! Click OK to refresh the page."
@@ -128,6 +128,8 @@ const PaymentForm = () => {
           phoneNumber
         );
         // Send email confirmation to admin email
+
+
       }
     }
   };
@@ -135,7 +137,7 @@ const PaymentForm = () => {
   return (
     <PaymentFormContainer>
       <FormContainer onSubmit={handlePaymentFormSubmit}>
-        <h2>Checkout Now: </h2>
+        <h2>Cart Total: {amount} </h2>
         <FormInput
           label="Ship To Name"
           type="text"

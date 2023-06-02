@@ -5,8 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { setCategories } from "../../store/categories/category.reducer";
 import { getCategoriesAndDocuments } from "../../utils/firebase/firebase.utils";
-import { Spinner } from "react-bootstrap";
 import NotFound from "../../components/not-found/not-found.component";
+import LoadingSpinner from "../../components/loading-spinner/loading-spinner.component";
 
 const CategoriesPreview = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +23,7 @@ const CategoriesPreview = () => {
   const categoriesMap = useSelector(selectCategoriesMap);
 // TODO: impose ordering on display of items
   return isLoading ? (
-    <Spinner />
+    <LoadingSpinner />
   ) : (
     <Fragment>
     

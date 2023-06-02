@@ -14,8 +14,8 @@ import { useEffect, useState } from "react";
 import { addItemToCart, setIsCartOpen } from "../../store/cart/cart.reducer";
 import { setCategories } from "../../store/categories/category.reducer";
 import { getCategoriesAndDocuments } from "../../utils/firebase/firebase.utils";
-import { Spinner } from "react-bootstrap";
 import NotFound from "../not-found/not-found.component";
+import LoadingSpinner from "../loading-spinner/loading-spinner.component";
 
 const ProductPage = ({ products }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -45,13 +45,12 @@ const ProductPage = ({ products }) => {
   if (isFinite(id)) {
    item = categoriesMap[category].items.filter((product) => product.id === parseInt(id));
   }
-console.log(item);
     const { name, stock, price, scent, description, images } = item[0]
     const addProductToCart = () => dispatch(addItemToCart([item[0], item[0].stock]));
 
   
   return (
-    isLoading ? <Spinner /> : 
+    isLoading ? <LoadingSpinner /> : 
     <ProductPageContainer>
       <ProductName>{name}</ProductName>
       <ProductInfoContainer>

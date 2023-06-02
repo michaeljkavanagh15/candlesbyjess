@@ -10,6 +10,7 @@ const Shop = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const getCategoriesMap = async () => {
       const categoriesArray = await getCategoriesAndDocuments();
       dispatch(setCategories(categoriesArray));

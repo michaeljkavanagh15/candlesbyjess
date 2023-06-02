@@ -8,8 +8,8 @@ import ProductPage from "../../components/product-page/product-page.component";
 import { setCategories } from "../../store/categories/category.reducer";
 import { getCategoriesAndDocuments } from "../../utils/firebase/firebase.utils";
 
-import { Spinner } from "react-bootstrap";
 import NotFound from "../../components/not-found/not-found.component";
+import LoadingSpinner from "../../components/loading-spinner/loading-spinner.component";
 
 
 const Category = () => {
@@ -46,7 +46,7 @@ const Category = () => {
         // path="*"
         index
         element={
-          isLoading ? <Spinner /> : (categoriesMap[category] ?
+          isLoading ? <LoadingSpinner /> : (categoriesMap[category] ?
           <Fragment>
             <Title>
               {category.charAt(0).toUpperCase() + category.slice(1)}
