@@ -13,13 +13,17 @@ import {
   FormContainer,
   PaymentButton,
 } from "./payment-form.styles";
-import { getUserDisplayName } from "../../utils/firebase/firebase.utils";
+import {
+  getUserDisplayName,
+  updateDatabaseStock,
+} from "../../utils/firebase/firebase.utils";
 import { sendEmail } from "../../utils/emailJS/emailJS.utils";
 
 import {
   checkCartItemStock,
   useCheckCartItemQuantity,
 } from "../../utils/cart/cart.utils";
+import { clearAllCartItemsFromCart } from "../../store/cart/cart.reducer";
 
 const defaultFormFields = {
   shippingName: "",
@@ -31,6 +35,7 @@ const defaultFormFields = {
   phoneNumber: "",
 };
 // TODO: add total amount & styling to end of payment form
+// TODO: add checkout confirmation or rerouting once checkout is complete
 
 const PaymentForm = () => {
   const stripe = useStripe();
@@ -43,10 +48,15 @@ const PaymentForm = () => {
   useCheckCartItemQuantity(checkoutItems);
   const amount = useSelector(selectCartTotal);
 
-  const cartItemStockCheck = async (e) => {
+  const handlePaymentFormSubmit = async (e) => {
     e.preventDefault();
-    if (await checkCartItemStock(checkoutItems)) {
-      paymentHandler();
+    if (!checkoutItems.length) {
+      alert("Your cart is empty!");
+    } else if (await checkCartItemStock(checkoutItems)) {
+      await paymentHandler();
+      await updateDatabaseStock(checkoutItems);
+      dispatch(clearAllCartItemsFromCart());
+      window.location.reload(false);
     } else {
       alert(
         "Looks like something in your cart doesn't have enough stock! Click OK to refresh the page."
@@ -124,7 +134,7 @@ const PaymentForm = () => {
 
   return (
     <PaymentFormContainer>
-      <FormContainer onSubmit={cartItemStockCheck}>
+      <FormContainer onSubmit={handlePaymentFormSubmit}>
         <h2>Checkout Now: </h2>
         <FormInput
           label="Ship To Name"

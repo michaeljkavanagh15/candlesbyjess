@@ -21,7 +21,12 @@ import {
   query,
   getDocs,
   where,
+  updateDoc,
+  arrayRemove,
+  arrayUnion,
+  collectionGroup,
 } from "firebase/firestore";
+import { getDatabase, ref, child, push, update } from "firebase/database";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -66,7 +71,6 @@ export const addCollectionAndDocuments = async (
   await batch.commit();
   console.log("done");
 };
-// TODO make function to deduct the stock in the DB by the item.quantity
 // Retreive data from Firebase
 export const getCategoriesAndDocuments = async () => {
   const collectionRef = collection(db, "categories");
@@ -74,6 +78,29 @@ export const getCategoriesAndDocuments = async () => {
 
   const querySnapshot = await getDocs(q);
   return querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
+};
+
+export const updateDatabaseStock = async (cartItems) => {
+  cartItems.map(async (cartItem) => {
+    const itemCat =
+      cartItem.itemCategoy.charAt(0).toUpperCase() +
+      cartItem.itemCategoy.slice(1);
+    const collectionRef = doc(db, "categories", itemCat.toLowerCase());
+
+    const m = await getDocsFromCategory(itemCat);
+    const item = m[0].items.filter((i) => i.id === cartItem.id)[0];
+
+    await updateDoc(collectionRef, {
+      items: arrayRemove(item),
+    });
+    console.log("item removed");
+    item.stock = item.stock - cartItem.quantity;
+
+    await updateDoc(collectionRef, {
+      items: arrayUnion(item),
+    });
+    console.log("item added");
+  });
 };
 
 export const createUserDocumentFromAuth = async (
@@ -130,20 +157,6 @@ export const getUserDisplayName = async (userID) => {
   return userSnapShot.data().displayName;
 };
 
-// export const getCartItemStock = async (cartItems) => {
-//   const itemRef = collection(db, "categories");
-//   const catArr = [];
-//   const itemArr = [];
-
-//   cartItems.map(async (cartItem) => {
-//     const q = query(collection(db, "categories"));
-//     const querySnapshot = await getDocs(q);
-//     const catMap = querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
-//     catMap.forEach((category) => catArr.push(category.items));
-//     catArr.forEach((arr) => itemArr.push(...arr));
-//   });
-// };
-
 export const getDocsFromCategory = async (category) => {
   const q = query(
     collection(db, "categories"),
@@ -153,9 +166,7 @@ export const getDocsFromCategory = async (category) => {
   const querySnapshot = await getDocs(q);
   const catMap = querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
   return catMap;
-}
-
-
+};
 
 export const getItemCategory = (id) => {
   if (id <= 1999) {

@@ -1,10 +1,12 @@
 import { selectCategoriesMap } from "../../store/categories/category.selector";
 import { useSelector, useDispatch } from "react-redux";
-import { setItemQuantityFromCart } from "../../store/cart/cart.reducer";
+import {
+  clearItemFromCart,
+  setItemQuantityFromCart,
+} from "../../store/cart/cart.reducer";
 import { useEffect } from "react";
 import { setCategories } from "../../store/categories/category.reducer";
 import { getCategoriesAndDocuments } from "../../utils/firebase/firebase.utils";
-// TODO modal here?
 
 export function useCheckCartItemQuantity(cartItems) {
   const dispatch = useDispatch();
@@ -28,6 +30,11 @@ export function useCheckCartItemQuantity(cartItems) {
           `Looks like there's not enough ${item.name} to go around! There's ${updatedItemStock} left. We'll update your cart for you.`
         );
         dispatch(setItemQuantityFromCart([item, updatedItemStock]));
+      } else if (!updatedItemStock) {
+        alert(
+          `Oh no! Looks like all of the ${item.name} is gone! We'll update your cart for you.`
+        );
+        dispatch(clearItemFromCart(item));
       }
       return updatedItemStock >= item.quantity;
     });
@@ -47,8 +54,6 @@ export async function checkCartItemStock(cartItems) {
         (databaseItem) => databaseItem.title.toLowerCase() === cat.toLowerCase()
       )[0]
       .items.filter((i) => i.id === cartItem.id)[0];
-      return dbItem.stock >= cartItem.quantity;
+    return dbItem.stock >= cartItem.quantity;
   });
-
-  
 }

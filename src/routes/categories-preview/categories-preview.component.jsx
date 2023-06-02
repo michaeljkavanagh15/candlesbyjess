@@ -21,7 +21,7 @@ const CategoriesPreview = () => {
     getCategoriesMap();
   }, []);
   const categoriesMap = useSelector(selectCategoriesMap);
-
+// TODO: impose ordering on display of items
   return isLoading ? (
     <Spinner />
   ) : (

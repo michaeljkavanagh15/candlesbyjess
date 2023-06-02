@@ -1,0 +1,1 @@
+TODO: add order history in DB. Can be a subcategory on the user or maybe another DB entirely, as guest orders should still be logged but not accessable to a user
